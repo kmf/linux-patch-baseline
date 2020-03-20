@@ -171,7 +171,7 @@ echo -n ']}'
   def updates
     ubuntu_updates = ubuntu_base + <<-PRINT_JSON
 echo -n '{"available":['
-DEBIAN_FRONTEND=noninteractive apt-get upgrade --dry-run | grep Inst | tr -d '[]()' |\\
+DEBIAN_FRONTEND=noninteractive apt upgrade --dry-run | grep Inst | tr -d '[]()' |\\
   awk '{ printf "{\\"name\\":\\""$2"\\",\\"version\\":\\""$4"\\",\\"repo\\":\\""$5"\\",\\"arch\\":\\""$6"\\"}," }' | rev | cut -c 2- | rev | tr -d '\\n'
 echo -n ']}'
     PRINT_JSON
@@ -183,7 +183,7 @@ echo -n ']}'
   def ubuntu_base
     base = <<-PRINT_JSON
 #!/bin/sh
-DEBIAN_FRONTEND=noninteractive apt-get update >/dev/null 2>&1
+DEBIAN_FRONTEND=noninteractive apt update >/tmp/ubuntu_base.txt 2>&1
 readlock() { cat /proc/locks | awk '{print $5}' | grep -v ^0 | xargs -I {1} find /proc/{1}/fd -maxdepth 1 -exec readlink {} \\; | grep '^/var/lib/dpkg/lock$'; }
 while test -n "$(readlock)"; do sleep 1; done
 echo " "
